@@ -2,7 +2,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
-
+from sklearn.model_selection import train_test_split
 
 
 
@@ -23,6 +23,9 @@ class Regressor:
         
         if self.scale == True:
             self.X = self.scaler.transform(self.X)
+
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.3, shuffle=False, stratify=None)
+        
 
             
     def _sliding_window(self, _list, look_back, look_front):
@@ -51,6 +54,18 @@ class Regressor:
 
     def get_y(self):
         return self.y
+    
+    def get_Xtrain(self):
+        return self.X_train
+
+    def get_ytrain(self):
+        return self.y_train
+
+    def get_Xtest(self):
+        return self.X_test
+
+    def get_ytest(self):
+        return self.y_test
 
     def _normalize_data(self, data):
         scaler = StandardScaler().fit(data)
