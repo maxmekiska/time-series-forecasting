@@ -4,6 +4,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 
 
+
+
 class Regressor:
     
     def __init__(self, time_series, look_back, look_future, scale=False) -> object:
@@ -22,8 +24,7 @@ class Regressor:
         if self.scale == True:
             self.X = self.scaler.transform(self.X)
 
-    
-        
+            
     def _sliding_window(self, _list, look_back, look_front):
         ''' Method divide input data into a sequential training dataset.
             
@@ -45,14 +46,15 @@ class Regressor:
             front.append(_list[i+look_back : i+look_back+look_front])
         return back, front
     
-    def get_sequences(self):
-        return self.X, self.y
+    def get_X(self):
+        return self.X
+
+    def get_y(self):
+        return self.y
 
     def _normalize_data(self, data):
         scaler = StandardScaler().fit(data)
-        #scaled_data = scaler.transform(data)
-        return scaler #scaled_data
-
+        return scaler
 
     def forecast(self, data):
         if self.scale == True:
