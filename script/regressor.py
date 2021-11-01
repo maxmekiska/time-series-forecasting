@@ -3,7 +3,8 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import mean_squared_error
+from tqdm import tqdm
 
 
 class Regressor:
@@ -70,6 +71,24 @@ class Regressor:
     def _normalize_data(self, data):
         scaler = StandardScaler().fit(data)
         return scaler
+
+    def performance(self):
+        performance_score = []
+
+        model_1 = KNeighborsRegressor()
+        #model_2 = DecisionTreeRegressor()
+        #model_3 = RandomForestRegressor()
+        model_1.fit(self.X_train, self.y_train)
+        #model_2.fit(self.X_train, self.y_train)
+        #model_3.fit(self.X_train, self.y_train)
+
+        for i in tqdm(range(len(self.X_test))):
+            data = [self.X_test[i]]
+            yhat_1 = model_1.predict(data)
+            performance_score.append(mean_squared_error(yhat_1[0], self.y_test[i]))
+
+        return  performance_score
+
 
     def forecast(self, data):
         if self.scale == True:
