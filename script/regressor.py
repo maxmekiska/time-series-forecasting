@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -74,7 +74,14 @@ class Regressor:
         scaler = StandardScaler().fit(data)
         return scaler
 
-    def performance(self):
+    def performance(self, metric):
+        if metric == 'MSE':
+            met = mean_squared_error
+        elif metric == 'MAE':
+            met = mean_average_error
+        else:
+            raise 'choose MSE or MAE'
+
         performance_score_model_1 = []
         performance_score_model_2 = []
         performance_score_model_3 = []
@@ -85,14 +92,16 @@ class Regressor:
         model_1.fit(self.X_train, self.y_train)
         model_2.fit(self.X_train, self.y_train)
         model_3.fit(self.X_train, self.y_train)
+        
         print('K-Neighbors Regressor Model')
         for i in tqdm(range(len(self.X_test))):
             data = [self.X_test[i]]
             yhat_1 = model_1.predict(data)
-            performance_score_model_1.append(mean_squared_error(yhat_1[0], self.y_test[i]))
+            performance_score_model_1.append(met(yhat_1[0], self.y_test[i]))
 
         plt.plot(performance_score_model_1)
-        plt.ylabel('MSE')
+        plt.ylabel(metric)
+        plt.title('K-Neighbors Regressor Model Training')
         plt.show()
         plt.clf()
 
@@ -100,10 +109,10 @@ class Regressor:
         for i in tqdm(range(len(self.X_test))):
             data = [self.X_test[i]]
             yhat_1 = model_2.predict(data)
-            performance_score_model_2.append(mean_squared_error(yhat_1[0], self.y_test[i]))
+            performance_score_model_2.append(met(yhat_1[0], self.y_test[i]))
 
         plt.plot(performance_score_model_2)
-        plt.ylabel('MSE')
+        plt.ylabel(metric)
         plt.show()
         plt.clf()
 
@@ -111,10 +120,10 @@ class Regressor:
         for i in tqdm(range(len(self.X_test))):
             data = [self.X_test[i]]
             yhat_1 = model_3.predict(data)
-            performance_score_model_3.append(mean_squared_error(yhat_1[0], self.y_test[i]))
+            performance_score_model_3.append(met(yhat_1[0], self.y_test[i]))
 
         plt.plot(performance_score_model_3)
-        plt.ylabel('MSE')
+        plt.ylabel(metric)
         plt.show()
         plt.clf()
 
