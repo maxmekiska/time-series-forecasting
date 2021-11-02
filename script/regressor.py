@@ -6,7 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import numpy as np
+#import numpy as np
+from numpy import mean, median
 
 
 class Regressor:
@@ -128,10 +129,22 @@ class Regressor:
         plt.title('Random-Forest Regressor Model Performance')
         plt.show()
         plt.clf()
+        
+        mean1 = mean(performance_score_model_1)
+        mean2 = mean(performance_score_model_2)
+        mean3 = mean(performance_score_model_3)
 
-        print(np.median(performance_score_model_1))
-        print(np.median(performance_score_model_2))
-        print(np.median(performance_score_model_3))
+        
+        median1 = median(performance_score_model_1)
+        median2 = median(performance_score_model_2)
+        median3 = median(performance_score_model_3)
+
+        print('------------Summary--------------')
+        print(f'K-Neighbors Regressor {metric} Mean: {mean1} Median: {median1}')
+        print(f'Decision-Tree Regressor {metric} Mean: {mean2} Median: {median2}')
+        print(f'Random-Forest Regressor {metric} Mean: {mean3} Median: {median3}')
+        print('---------------------------------')
+
 
 
 
