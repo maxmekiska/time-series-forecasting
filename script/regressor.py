@@ -122,7 +122,7 @@ class Regressor:
         print(np.median(performance_score_model_2))
         print(np.median(performance_score_model_3))
 
-        return performance_score_model_1
+
 
 
 
