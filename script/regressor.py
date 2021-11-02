@@ -5,6 +5,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class Regressor:
@@ -89,11 +91,21 @@ class Regressor:
             yhat_1 = model_1.predict(data)
             performance_score_model_1.append(mean_squared_error(yhat_1[0], self.y_test[i]))
 
+        plt.plot(performance_score_model_1)
+        plt.ylabel('MSE')
+        plt.show()
+        plt.clf()
+
         print('Decision-Tree Regressor Model')
         for i in tqdm(range(len(self.X_test))):
             data = [self.X_test[i]]
             yhat_1 = model_2.predict(data)
             performance_score_model_2.append(mean_squared_error(yhat_1[0], self.y_test[i]))
+
+        plt.plot(performance_score_model_2)
+        plt.ylabel('MSE')
+        plt.show()
+        plt.clf()
 
         print('Random-Forest Regressor Model')
         for i in tqdm(range(len(self.X_test))):
@@ -101,6 +113,16 @@ class Regressor:
             yhat_1 = model_3.predict(data)
             performance_score_model_3.append(mean_squared_error(yhat_1[0], self.y_test[i]))
 
+        plt.plot(performance_score_model_3)
+        plt.ylabel('MSE')
+        plt.show()
+        plt.clf()
+
+        print(np.median(performance_score_model_1))
+        print(np.median(performance_score_model_2))
+        print(np.median(performance_score_model_3))
+
+        return performance_score_model_1
 
 
 
