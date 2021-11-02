@@ -78,7 +78,7 @@ class Regressor:
         if metric == 'MSE':
             met = mean_squared_error
         elif metric == 'MAE':
-            met = mean_average_error
+            met = mean_absolute_error
         else:
             raise 'choose MSE or MAE'
 
@@ -101,7 +101,7 @@ class Regressor:
 
         plt.plot(performance_score_model_1)
         plt.ylabel(metric)
-        plt.title('K-Neighbors Regressor Model Training')
+        plt.title('K-Neighbors Regressor Model Performance')
         plt.show()
         plt.clf()
 
@@ -113,6 +113,7 @@ class Regressor:
 
         plt.plot(performance_score_model_2)
         plt.ylabel(metric)
+        plt.title('Decision-Tree Regressor Model Performance')
         plt.show()
         plt.clf()
 
@@ -124,6 +125,7 @@ class Regressor:
 
         plt.plot(performance_score_model_3)
         plt.ylabel(metric)
+        plt.title('Random-Forest Regressor Model Performance')
         plt.show()
         plt.clf()
 
