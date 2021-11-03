@@ -168,7 +168,9 @@ class Regressor:
         ''' Method to apply regression models onto target data.
 
             Parameters:
-
+                data (list): Target data for which prediction will be made.
+            Returns:
+                yhat_1, yhat_2, yhat3 (list, list, list): Output predictions of all Regression models.
         '''
         if self.scale == True:
             data = self.scaler.transform([data])
