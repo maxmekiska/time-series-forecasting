@@ -27,7 +27,7 @@ class Regressor:
         if self.scale == True:
             self.X = self.scaler.transform(self.X)
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.3, shuffle=False, stratify=None)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
         
 
             
@@ -35,7 +35,7 @@ class Regressor:
         ''' Method divide input data into a sequential training dataset.
             
             Parameters:
-                _list (list): Data to be devided into training dataset.
+                _list (list): Data to be divided into training dataset.
                 look_back (int): Days to look back.
                 look_front (int): Days to predict into the future.
             Returns:
@@ -53,28 +53,46 @@ class Regressor:
         return back, front
     
     def get_X(self):
+        ''' Getter method to return X data set.'''
         return self.X
 
     def get_y(self):
+        ''' Getter method to return y data set.'''
         return self.y
     
     def get_Xtrain(self):
+        ''' Getter method to return X train data set.'''
         return self.X_train
 
     def get_ytrain(self):
+        ''' Getter method to return y train data set.'''
         return self.y_train
 
     def get_Xtest(self):
+        ''' Getter method to return X test data set.'''
         return self.X_test
 
     def get_ytest(self):
+        ''' Getter method to return y test data set.'''
         return self.y_test
 
-    def _normalize_data(self, data):
+    def _normalize_data(self, data: list) -> object:
+        ''' Private method to normalize data.
+
+            Parameters:
+                data (list): Target data to be scaled.
+            Returns:
+                scaler (object): Sci-kit scaler object.
+        '''
         scaler = StandardScaler().fit(data)
         return scaler
 
-    def performance(self, metric):
+    def performance(self, metric: str) -> None:
+        ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
+
+            Parameters:
+                metric (str): What evaluation metric should be used, MSE or MAE.
+        '''
         if metric == 'MSE':
             met = mean_squared_error
         elif metric == 'MAE':
@@ -146,13 +164,12 @@ class Regressor:
         print(f'Decision-Tree Regressor {metric} Mean: {mean2} Median: {median2}, Variance: {var2}')
         print(f'Random-Forest Regressor {metric} Mean: {mean3} Median: {median3}, Variance: {var3}')
 
+    def forecast(self, data: list) -> (list, list, list):
+        ''' Method to apply regression models onto target data.
 
+            Parameters:
 
-
-
-
-
-    def forecast(self, data):
+        '''
         if self.scale == True:
             data = self.scaler.transform([data])
         else:
