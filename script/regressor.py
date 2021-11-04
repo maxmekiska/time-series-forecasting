@@ -10,13 +10,29 @@ from numpy import mean, median, var
 
 
 class Regressor:
+    ''' Class that wrapps around scikit learn time series regressors. Supports training, performance assessment and prediction functionality.
+
+        Methods
+        -------
+            _sliding_window(self, _list: list, look_back: int, look_front: int):
+            _normalize_data(self, data: list) -> object:
+            get_X(self):
+            get_y(self):
+            get_Xtrain(self):
+            get_ytrain(self):
+            get_Xtest(self):
+            get_ytest(self):
+            performance(self, metric: str) -> None:
+            forecast(self, data: list) -> (list, list, list):
+    '''
     
-    def __init__(self, time_series, look_back, look_future, scale=False) -> object:
+    def __init__(self, time_series: list, look_back: int, look_future: int, scale: bool = False) -> object:
         '''
             Parameters:
-                steps_past (int): Steps predictor will look backward.
-                steps_future (int): Steps predictor will look forward.
-                data (DataFrame): Input data for model training.
+                time_series (list): Input data for model.
+                look_back (int): Steps predictor will look backward.
+                look_future (int): Steps predictor will look forward.
+                scale (bool): Scale input time series.
         '''
         self.X, self.y = self._sliding_window(time_series, look_back, look_future)
 
@@ -31,7 +47,7 @@ class Regressor:
         
 
             
-    def _sliding_window(self, _list, look_back, look_front):
+    def _sliding_window(self, _list: list, look_back: int, look_front: int):
         ''' Method divide input data into a sequential training dataset.
             
             Parameters:
@@ -51,6 +67,18 @@ class Regressor:
             back.append(_list[i:i+look_back])
             front.append(_list[i+look_back : i+look_back+look_front])
         return back, front
+
+
+    def _normalize_data(self, data: list) -> object:
+        ''' Private method to normalize data.
+
+            Parameters:
+                data (list): Target data to be scaled.
+            Returns:
+                scaler (object): Sci-kit scaler object.
+        '''
+        scaler = StandardScaler().fit(data)
+        return scaler
     
     def get_X(self):
         ''' Getter method to return X data set.'''
@@ -75,17 +103,6 @@ class Regressor:
     def get_ytest(self):
         ''' Getter method to return y test data set.'''
         return self.y_test
-
-    def _normalize_data(self, data: list) -> object:
-        ''' Private method to normalize data.
-
-            Parameters:
-                data (list): Target data to be scaled.
-            Returns:
-                scaler (object): Sci-kit scaler object.
-        '''
-        scaler = StandardScaler().fit(data)
-        return scaler
 
     def performance(self, metric: str) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
