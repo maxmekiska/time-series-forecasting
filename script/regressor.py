@@ -15,15 +15,25 @@ class Regressor:
         Methods
         -------
             _sliding_window(self, _list: list, look_back: int, look_front: int):
+                Private method divide input data into a sequential training dataset. 
             _normalize_data(self, data: list) -> object:
+                Private method to normalize data. 
             get_X(self):
+                Getter method to return X data set.  
             get_y(self):
+                Getter method to return y data set.  
             get_Xtrain(self):
+                Getter method to return X train data set.  
             get_ytrain(self):
+                Getter method to return y train data set.  
             get_Xtest(self):
+                Getter method to return X test data set.  
             get_ytest(self):
+                Getter method to return y test data set.  
             performance(self, metric: str) -> None:
+                Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%. 
             forecast(self, data: list) -> (list, list, list):
+                Method to apply regression models onto target data.
     '''
     
     def __init__(self, time_series: list, look_back: int, look_future: int, scale: bool = False) -> object:
@@ -48,7 +58,7 @@ class Regressor:
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
-        ''' Method divide input data into a sequential training dataset.
+        ''' Private method divide input data into a sequential training dataset.
             
             Parameters:
                 _list (list): Data to be divided into training dataset.
