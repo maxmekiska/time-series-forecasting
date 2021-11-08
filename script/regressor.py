@@ -2,6 +2,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import LinearSVR
+from sklearn.linear_model import BayesianRidge
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -133,15 +134,18 @@ class Regressor:
         performance_score_model_2 = []
         performance_score_model_3 = []
         performance_score_model_4 = []
+        performance_score_model_5 = []
 
         model_1 = KNeighborsRegressor()
         model_2 = DecisionTreeRegressor()
         model_3 = RandomForestRegressor()
         model_4 = MultiOutputRegressor(LinearSVR())
+        model_5 = MultiOutputRegressor(BayesianRidge())
         model_1.fit(self.X_train, self.y_train)
         model_2.fit(self.X_train, self.y_train)
         model_3.fit(self.X_train, self.y_train)
         model_4.fit(self.X_train, self.y_train)
+        model_5.fit(self.X_train, self.y_train)
         
         print('K-Neighbors Regressor Model')
         for i in tqdm(range(len(self.X_test))):
@@ -190,28 +194,45 @@ class Regressor:
         plt.title('Linear SVR Regressor Model Performance')
         plt.show()
         plt.clf()
+
+        print('Bayesian Ridge Regressor Model')
+        for i in tqdm(range(len(self.X_test))):
+            data = [self.X_test[i]]
+            yhat_1 = model_5.predict(data)
+            performance_score_model_5.append(met(yhat_1[0], self.y_test[i]))
+
+        plt.plot(performance_score_model_5)
+        plt.ylabel(metric)
+        plt.title('Bayesian Ridge Regressor Model Performance')
+        plt.show()
+        plt.clf()
+
         mean1 = mean(performance_score_model_1)
         mean2 = mean(performance_score_model_2)
         mean3 = mean(performance_score_model_3)
         mean4 = mean(performance_score_model_4)
+        mean5 = mean(performance_score_model_5)
 
         
         median1 = median(performance_score_model_1)
         median2 = median(performance_score_model_2)
         median3 = median(performance_score_model_3)
         median4 = median(performance_score_model_4)
+        median5 = median(performance_score_model_5)
 
         var1 = var(performance_score_model_1)
         var2 = var(performance_score_model_2)
         var3 = var(performance_score_model_3)
         var4 = var(performance_score_model_4)
+        var5 = var(performance_score_model_5)
 
         print(f'K-Neighbors Regressor {metric} Mean: {mean1} Median: {median1}, Variance: {var1}')
         print(f'Decision-Tree Regressor {metric} Mean: {mean2} Median: {median2}, Variance: {var2}')
         print(f'Random-Forest Regressor {metric} Mean: {mean3} Median: {median3}, Variance: {var3}')
         print(f'Linear SVR Regressor {metric} Mean: {mean4} Median: {median4}, Variance: {var4}')
+        print(f'Bayesian Ridge Regressor {metric} Mean: {mean5} Median: {median5}, Variance: {var5}')
 
-    def forecast(self, data: list) -> (list, list, list, list):
+    def forecast_all(self, data: list) -> (list, list, list, list):
         ''' Method to apply regression models onto target data.
 
             Parameters:
@@ -239,3 +260,38 @@ class Regressor:
         yhat_4 = model_4.predict(data)
         
         return yhat_1, yhat_2, yhat_3, yhat_4
+
+
+    def forecast(self, data: list, model: str) -> list:
+        ''' Method to apply single chosen regression model onto target data.
+
+            Parameters:
+                data (list): Target data for which prediction will be made.
+                model (str): What regressor model should be used.
+            Returns:
+                yhat_1, yhat_2, yhat3 (list, list, list): Output predictions of all Regression models.
+        '''
+        if self.scale == True:
+            data = self.scaler.transform([data])
+        else:
+            data = [data]
+        
+        models = [KNeighborsRegressor(), DecisionTreeRegressor(), RandomForestRegressor(), MultiOutputRegressor(LinearSVR())]
+
+        if model == 'KNeighborsRegressor':
+            model_used = models[0]
+        elif model == 'DecisionTreeRegressor':
+            model_used = models[1]
+        elif model == 'RandomForestRegressor':
+            model_used = models[2]
+        elif model == 'LinearSVR':
+            model_used = models[3]
+
+
+        model_used.fit(self.X, self.y)
+
+        
+
+        yhat = model_used.predict(data)
+        
+        return yhat
