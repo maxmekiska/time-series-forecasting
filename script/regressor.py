@@ -1,6 +1,8 @@
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.svm import LinearSVR
+from sklearn.multioutput import MultiOutputRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -130,13 +132,16 @@ class Regressor:
         performance_score_model_1 = []
         performance_score_model_2 = []
         performance_score_model_3 = []
+        performance_score_model_4 = []
 
         model_1 = KNeighborsRegressor()
         model_2 = DecisionTreeRegressor()
         model_3 = RandomForestRegressor()
+        model_4 = MultiOutputRegressor(LinearSVR())
         model_1.fit(self.X_train, self.y_train)
         model_2.fit(self.X_train, self.y_train)
         model_3.fit(self.X_train, self.y_train)
+        model_4.fit(self.X_train, self.y_train)
         
         print('K-Neighbors Regressor Model')
         for i in tqdm(range(len(self.X_test))):
@@ -174,24 +179,39 @@ class Regressor:
         plt.show()
         plt.clf()
         
+        print('Linear SVR Regressor Model')
+        for i in tqdm(range(len(self.X_test))):
+            data = [self.X_test[i]]
+            yhat_1 = model_4.predict(data)
+            performance_score_model_4.append(met(yhat_1[0], self.y_test[i]))
+
+        plt.plot(performance_score_model_4)
+        plt.ylabel(metric)
+        plt.title('Linear SVR Regressor Model Performance')
+        plt.show()
+        plt.clf()
         mean1 = mean(performance_score_model_1)
         mean2 = mean(performance_score_model_2)
         mean3 = mean(performance_score_model_3)
+        mean4 = mean(performance_score_model_4)
 
         
         median1 = median(performance_score_model_1)
         median2 = median(performance_score_model_2)
         median3 = median(performance_score_model_3)
+        median4 = median(performance_score_model_4)
 
         var1 = var(performance_score_model_1)
         var2 = var(performance_score_model_2)
         var3 = var(performance_score_model_3)
+        var4 = var(performance_score_model_4)
 
         print(f'K-Neighbors Regressor {metric} Mean: {mean1} Median: {median1}, Variance: {var1}')
         print(f'Decision-Tree Regressor {metric} Mean: {mean2} Median: {median2}, Variance: {var2}')
         print(f'Random-Forest Regressor {metric} Mean: {mean3} Median: {median3}, Variance: {var3}')
+        print(f'Linear SVR Regressor {metric} Mean: {mean4} Median: {median4}, Variance: {var4}')
 
-    def forecast(self, data: list) -> (list, list, list):
+    def forecast(self, data: list) -> (list, list, list, list):
         ''' Method to apply regression models onto target data.
 
             Parameters:
@@ -207,12 +227,15 @@ class Regressor:
         model_1 = KNeighborsRegressor()
         model_2 = DecisionTreeRegressor()
         model_3 = RandomForestRegressor()
+        model_4 = MultiOutputRegressor(LinearSVR()) 
         model_1.fit(self.X, self.y)
         model_2.fit(self.X, self.y)
         model_3.fit(self.X, self.y)
+        model_4.fit(self.X, self.y)
         
         yhat_1 = model_1.predict(data)
         yhat_2 = model_2.predict(data)
         yhat_3 = model_3.predict(data)
+        yhat_4 = model_4.predict(data)
         
-        return yhat_1, yhat_2, yhat_3
+        return yhat_1, yhat_2, yhat_3, yhat_4
