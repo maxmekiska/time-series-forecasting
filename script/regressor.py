@@ -227,17 +227,26 @@ class Regressor:
         var4 = var(performance_score_model_4)
         var5 = var(performance_score_model_5)
 
-        print(f'K-Neighbors Regressor {metric} Mean: {mean1} Median: {median1}, Variance: {var1}')
-        print(f'Decision-Tree Regressor {metric} Mean: {mean2} Median: {median2}, Variance: {var2}')
-        print(f'Random-Forest Regressor {metric} Mean: {mean3} Median: {median3}, Variance: {var3}')
-        print(f'Linear SVR Regressor {metric} Mean: {mean4} Median: {median4}, Variance: {var4}')
-        print(f'Bayesian Ridge Regressor {metric} Mean: {mean5} Median: {median5}, Variance: {var5}')
 
         results = {'Model': ['K-Neighbors', 'Decision-Tree', 'Random Forest', 'Linear SVR', 'Bayesian Ridge'], 'Mean': [mean1, mean2, mean3, mean4, mean5], 'Median': [median1, median2, median3, median4, median5], 'Variance': [var1, var2, var3, var4, var5]}
 
         df = DataFrame(data=results)
 
-        return df
+
+        def minimum_value_in_column(column):    
+
+            highlight = 'background-color: palegreen;'
+            default = ''
+
+            minimum_in_column = column.min()
+
+            # must return one string per cell in this column
+            return [highlight if v == minimum_in_column else default for v in column]
+
+
+
+
+        return df.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
 
     def forecast_all(self, data: list) -> (list, list, list, list, list):
         ''' Method to apply regression models onto target data.
