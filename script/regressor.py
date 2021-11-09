@@ -130,107 +130,43 @@ class Regressor:
             met = mean_absolute_error
         else:
             raise 'choose MSE or MAE'
-
-        performance_score_model_1 = []
-        performance_score_model_2 = []
-        performance_score_model_3 = []
-        performance_score_model_4 = []
-        performance_score_model_5 = []
-
-        model_1 = KNeighborsRegressor()
-        model_2 = DecisionTreeRegressor()
-        model_3 = RandomForestRegressor()
-        model_4 = MultiOutputRegressor(LinearSVR())
-        model_5 = MultiOutputRegressor(BayesianRidge())
-        model_1.fit(self.X_train, self.y_train)
-        model_2.fit(self.X_train, self.y_train)
-        model_3.fit(self.X_train, self.y_train)
-        model_4.fit(self.X_train, self.y_train)
-        model_5.fit(self.X_train, self.y_train)
         
-        print('K-Neighbors Regressor Model')
-        for i in tqdm(range(len(self.X_test))):
-            data = [self.X_test[i]]
-            yhat_1 = model_1.predict(data)
-            performance_score_model_1.append(met(yhat_1[0], self.y_test[i]))
 
-        plt.plot(performance_score_model_1)
-        plt.ylabel(metric)
-        plt.title('K-Neighbors Regressor Model Performance')
-        plt.show()
-        plt.clf()
-
-        print('Decision-Tree Regressor Model')
-        for i in tqdm(range(len(self.X_test))):
-            data = [self.X_test[i]]
-            yhat_1 = model_2.predict(data)
-            performance_score_model_2.append(met(yhat_1[0], self.y_test[i]))
-
-        plt.plot(performance_score_model_2)
-        plt.ylabel(metric)
-        plt.title('Decision-Tree Regressor Model Performance')
-        plt.show()
-        plt.clf()
-
-        print('Random-Forest Regressor Model')
-        for i in tqdm(range(len(self.X_test))):
-            data = [self.X_test[i]]
-            yhat_1 = model_3.predict(data)
-            performance_score_model_3.append(met(yhat_1[0], self.y_test[i]))
-
-        plt.plot(performance_score_model_3)
-        plt.ylabel(metric)
-        plt.title('Random-Forest Regressor Model Performance')
-        plt.show()
-        plt.clf()
-        
-        print('Linear SVR Regressor Model')
-        for i in tqdm(range(len(self.X_test))):
-            data = [self.X_test[i]]
-            yhat_1 = model_4.predict(data)
-            performance_score_model_4.append(met(yhat_1[0], self.y_test[i]))
-
-        plt.plot(performance_score_model_4)
-        plt.ylabel(metric)
-        plt.title('Linear SVR Regressor Model Performance')
-        plt.show()
-        plt.clf()
-
-        print('Bayesian Ridge Regressor Model')
-        for i in tqdm(range(len(self.X_test))):
-            data = [self.X_test[i]]
-            yhat_1 = model_5.predict(data)
-            performance_score_model_5.append(met(yhat_1[0], self.y_test[i]))
-
-        plt.plot(performance_score_model_5)
-        plt.ylabel(metric)
-        plt.title('Bayesian Ridge Regressor Model Performance')
-        plt.show()
-        plt.clf()
-
-        mean1 = mean(performance_score_model_1)
-        mean2 = mean(performance_score_model_2)
-        mean3 = mean(performance_score_model_3)
-        mean4 = mean(performance_score_model_4)
-        mean5 = mean(performance_score_model_5)
-
-        
-        median1 = median(performance_score_model_1)
-        median2 = median(performance_score_model_2)
-        median3 = median(performance_score_model_3)
-        median4 = median(performance_score_model_4)
-        median5 = median(performance_score_model_5)
-
-        var1 = var(performance_score_model_1)
-        var2 = var(performance_score_model_2)
-        var3 = var(performance_score_model_3)
-        var4 = var(performance_score_model_4)
-        var5 = var(performance_score_model_5)
+        models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
 
 
-        results = {'Model': ['K-Neighbors', 'Decision-Tree', 'Random Forest', 'Linear SVR', 'Bayesian Ridge'], 'Mean': [mean1, mean2, mean3, mean4, mean5], 'Median': [median1, median2, median3, median4, median5], 'Variance': [var1, var2, var3, var4, var5]}
+        results = {'Mean': [], 'Median': [], 'Variance': []}
 
-        df = DataFrame(data=results)
+        results = DataFrame(data=results)
+
+        for i, j in models.items():
+            performance_score_model = []
+
+            model  = j
+            model.fit(self.X_train, self.y_train)
+
+            print(i)
+            for k in tqdm(range(len(self.X_test))):
+                data = [self.X_test[k]]
+                yhat = model.predict(data)
+                performance_score_model.append(met(yhat[0], self.y_test[k]))
+
+
+            mean_value = mean(performance_score_model)
+            median_value = median(performance_score_model) 
+            variance_value = var(performance_score_model) 
+
+            row = {'Mean': mean_value, 'Median': median_value, 'Variance': variance_value}
+            row = DataFrame(data=row, index = [i])
+
+            results = results.append(row)
+
+
+            plt.plot(performance_score_model)
+            plt.ylabel(metric)
+            plt.title(i)
+            plt.show()
+            plt.clf()
 
 
         def minimum_value_in_column(column):    
@@ -246,7 +182,7 @@ class Regressor:
 
 
 
-        return df.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
+        return results.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
 
     def forecast_all(self, data: list) -> (list, list, list, list, list):
         ''' Method to apply regression models onto target data.
