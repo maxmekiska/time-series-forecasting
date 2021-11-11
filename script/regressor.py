@@ -225,19 +225,9 @@ class Regressor:
         else:
             data = [data]
         
-        models = [KNeighborsRegressor(), DecisionTreeRegressor(), RandomForestRegressor(), MultiOutputRegressor(LinearSVR()), MultiOutputRegressor(BayesianRidge())]
+        models = self.models
 
-        if model == 'KNeighborsRegressor':
-            model_used = models[0]
-        elif model == 'DecisionTreeRegressor':
-            model_used = models[1]
-        elif model == 'RandomForestRegressor':
-            model_used = models[2]
-        elif model == 'LinearSVR':
-            model_used = models[3]
-        elif model == 'BayesianRidge':
-            model_used = modles[4]
-
+        model_used = models.get(model)
 
         model_used.fit(self.X, self.y)
 
