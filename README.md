@@ -16,6 +16,7 @@ Wrapper around scikit-learn time series prediction algorithms.
 - [ ] implement grid-search file
 - [ ] implement basic time-series exploratory analysis capability
 - [ ] enable multivariate implementation capability
+- ...
 - maybe:
 - [ ] explore deep-learning models (tensor flow) 
 - [ ] explore ml with quantum computing boosting
