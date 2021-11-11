@@ -58,7 +58,11 @@ class Regressor:
             self.X = self.scaler.transform(self.X)
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
+
+
         
+        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
+
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
@@ -130,10 +134,8 @@ class Regressor:
             met = mean_absolute_error
         else:
             raise 'choose MSE or MAE'
-        
-
-        models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
-
+       
+        models = self.models
 
         results = {'Mean': [], 'Median': [], 'Variance': []}
 
@@ -184,37 +186,29 @@ class Regressor:
 
         return results.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
 
-    def forecast_all(self, data: list) -> (list, list, list, list, list):
+    def forecast_all(self, data: list) -> [list, list, list, list, list]:
         ''' Method to apply regression models onto target data.
 
             Parameters:
                 data (list): Target data for which prediction will be made.
             Returns:
-                yhat_1, yhat_2, yhat3 (list, list, list): Output predictions of all Regression models.
+                yhat_1, yhat_2, yhat3 [list, list, list]: Output predictions of all Regression models.
         '''
         if self.scale == True:
             data = self.scaler.transform([data])
         else:
             data = [data]
 
-        model_1 = KNeighborsRegressor()
-        model_2 = DecisionTreeRegressor()
-        model_3 = RandomForestRegressor()
-        model_4 = MultiOutputRegressor(LinearSVR()) 
-        model_5 = MultiOutputRegressor(BayesianRidge())
-        model_1.fit(self.X, self.y)
-        model_2.fit(self.X, self.y)
-        model_3.fit(self.X, self.y)
-        model_4.fit(self.X, self.y)
-        model_5.fit(self.X, self.y)
+        models = self.models
         
-        yhat_1 = model_1.predict(data)
-        yhat_2 = model_2.predict(data)
-        yhat_3 = model_3.predict(data)
-        yhat_4 = model_4.predict(data)
-        yhat_5 = model_4.predict(data)
+        final_yhat = []
+        for i, j in models.items():
+            current_model = j
+            current_model.fit(self.X, self.y)
+            yhat = current_model.predict(data)
+            final_yhat.append((i, yhat[0]))
         
-        return yhat_1, yhat_2, yhat_3, yhat_4, yhat_5
+        return final_yhat
 
 
     def forecast(self, data: list, model: str) -> list:
