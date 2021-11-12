@@ -1,4 +1,4 @@
-from sklearn.neighbors import KNeighborsRegressor
+#from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import LinearSVR
@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 from numpy import mean, median, var
 from pandas import DataFrame
 
+
+from models.knnmodel import *
 
 class Regressor:
     ''' Class that wrapps around scikit learn time series regressors. Supports training, performance assessment and prediction functionality.
