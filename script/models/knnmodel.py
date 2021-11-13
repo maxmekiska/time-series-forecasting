@@ -1,7 +1,7 @@
 from sklearn.neighbors import KNeighborsRegressor
 
 
-HYPARAM = {
+KNNHYPARAM = {
 "n_neighbors": [3, 5, 7, 8, 10, 12],
 "weights":['uniform', 'distance'],
 "algorithm": ['ball_tree', 'kd_tree', 'brute', 'auto'],
