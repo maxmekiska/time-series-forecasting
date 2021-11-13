@@ -3,3 +3,5 @@
 *.swo
 .ipynb_checkpoints
 logs.log
+__pycache__
+*.pyc
