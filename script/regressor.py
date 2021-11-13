@@ -14,6 +14,7 @@ from pandas import DataFrame
 
 
 from models.knnmodel import *
+from utils.gridsearch import *
 
 class Regressor:
     ''' Class that wrapps around scikit learn time series regressors. Supports training, performance assessment and prediction functionality.
@@ -60,12 +61,10 @@ class Regressor:
             self.X = self.scaler.transform(self.X)
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
-
-
         
         self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
 
-
+        self.models_optimized = {}
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
         ''' Private method divide input data into a sequential training dataset.
@@ -123,6 +122,12 @@ class Regressor:
     def get_ytest(self):
         ''' Getter method to return y test data set.'''
         return self.y_test
+
+    def optimizer(self):
+        
+        optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
+
+        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(optimized_KNN)}
 
     def performance(self, metric: str) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
