@@ -127,9 +127,9 @@ class Regressor:
         
         optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
 
-        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(optimized_KNN)}
+        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN)}
 
-    def performance(self, metric: str) -> None:
+    def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
 
             Parameters:
@@ -142,7 +142,10 @@ class Regressor:
         else:
             raise 'choose MSE or MAE'
        
-        models = self.models
+        if optimized == False:
+            models = self.models
+        else:
+            models = self.models_optimized
 
         results = {'Mean': [], 'Median': [], 'Variance': []}
 
