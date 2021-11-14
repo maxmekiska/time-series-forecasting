@@ -192,11 +192,9 @@ class Regressor:
             return [highlight if v == minimum_in_column else default for v in column]
 
 
-
-
         return results.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
 
-    def forecast_all(self, data: list) -> [list, list, list, list, list]:
+    def forecast_all(self, data: list, optimized: bool = False) -> [list, list, list, list, list]:
         ''' Method to apply regression models onto target data.
 
             Parameters:
@@ -209,7 +207,10 @@ class Regressor:
         else:
             data = [data]
 
-        models = self.models
+        if optimized == False:
+            models = self.models
+        else:
+            models = self.models_optimized
         
         final_yhat = []
         for i, j in models.items():
@@ -221,7 +222,7 @@ class Regressor:
         return final_yhat
 
 
-    def forecast(self, data: list, model: str) -> list:
+    def forecast(self, data: list, model: str, optimized: bool = False) -> list:
         ''' Method to apply single chosen regression model onto target data.
 
             Parameters:
@@ -235,7 +236,10 @@ class Regressor:
         else:
             data = [data]
         
-        models = self.models
+        if optimized == False:
+            models = self.models
+        else:
+            models = self.models_optimized
 
         model_used = models.get(model)
 
