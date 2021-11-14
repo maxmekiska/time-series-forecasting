@@ -1,5 +1,5 @@
 #from sklearn.neighbors import KNeighborsRegressor
-from sklearn.tree import DecisionTreeRegressor
+#from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import LinearSVR
 from sklearn.linear_model import BayesianRidge
@@ -14,6 +14,7 @@ from pandas import DataFrame
 
 
 from models.knnmodel import *
+from models.dtreemodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -126,8 +127,10 @@ class Regressor:
     def optimizer(self):
         
         optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
+        optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
 
-        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN)}
+        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
+                                 "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE)}
 
     def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
