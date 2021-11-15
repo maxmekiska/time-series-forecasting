@@ -66,6 +66,9 @@ class Regressor:
         self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
 
         self.models_optimized = {}
+
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM}
+
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
         ''' Private method divide input data into a sequential training dataset.
@@ -124,7 +127,7 @@ class Regressor:
         ''' Getter method to return y test data set.'''
         return self.y_test
 
-    def optimizer(self):
+    def optimizer(self) -> None:
         
         optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
         optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
@@ -132,6 +135,18 @@ class Regressor:
         self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
                                  "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE)}
 
+    def optimize_ind(self, model: str) -> None:
+        target = model 
+        model_target = self.models.get(model)
+        parameters = self.hyperparameters.get(model)
+        optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+        if model == 'K-Neighbors Regressor': 
+            optimized_model = KNeighborsRegressor(**optimal_params)
+        elif model == 'DecisionTree Regressor': 
+            optimized_model = KNeighborsRegressor(**optimal_params)
+
+        self.models_optimized = {model: optimized_model}
+        
     def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
 
@@ -197,7 +212,7 @@ class Regressor:
 
         return results.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
 
-    def forecast_all(self, data: list, optimized: bool = False) -> [list, list, list, list, list]:
+    def forecast_all(self, data: list, optimized: bool = False) -> list:
         ''' Method to apply regression models onto target data.
 
             Parameters:
