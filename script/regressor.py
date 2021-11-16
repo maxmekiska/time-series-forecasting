@@ -1,6 +1,6 @@
 #from sklearn.neighbors import KNeighborsRegressor
 #from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
+#from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import LinearSVR
 from sklearn.linear_model import BayesianRidge
 from sklearn.multioutput import MultiOutputRegressor
@@ -15,6 +15,7 @@ from pandas import DataFrame
 
 from models.knnmodel import *
 from models.dtreemodel import *
+from models.randomforest import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -67,7 +68,7 @@ class Regressor:
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
@@ -131,9 +132,11 @@ class Regressor:
         
         optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
         optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
+        optimized_RFROREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
 
         self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
-                                 "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE)}
+                                 "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
+                                 "Random Forest Regressor": RandomForestRegressor(**optimized_RFOREST)}
 
     def optimize_ind(self, model: str) -> None:
         target = model 
@@ -143,7 +146,9 @@ class Regressor:
         if model == 'K-Neighbors Regressor': 
             optimized_model = KNeighborsRegressor(**optimal_params)
         elif model == 'DecisionTree Regressor': 
-            optimized_model = KNeighborsRegressor(**optimal_params)
+            optimized_model = DecisionTreeRegressor(**optimal_params)
+        elif model == 'Random Forest Regressor':
+            optimized_model = RandomForestRegressor(**optimal_params)
 
         self.models_optimized = {model: optimized_model}
         
@@ -262,8 +267,6 @@ class Regressor:
         model_used = models.get(model)
 
         model_used.fit(self.X, self.y)
-
-        
 
         yhat = model_used.predict(data)
         
