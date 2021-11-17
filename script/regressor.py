@@ -1,6 +1,3 @@
-#from sklearn.neighbors import KNeighborsRegressor
-#from sklearn.tree import DecisionTreeRegressor
-#from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import LinearSVR
 from sklearn.linear_model import BayesianRidge
 from sklearn.multioutput import MultiOutputRegressor
@@ -150,7 +147,7 @@ class Regressor:
         elif model == 'Random Forest Regressor':
             optimized_model = RandomForestRegressor(**optimal_params)
 
-        self.models_optimized = {model: optimized_model}
+        self.models_optimized[model] = optimized_model
         
     def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
