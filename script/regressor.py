@@ -129,7 +129,7 @@ class Regressor:
         
         optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
         optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
-        optimized_RFROREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
+        optimized_RFOREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
 
         self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
                                  "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
