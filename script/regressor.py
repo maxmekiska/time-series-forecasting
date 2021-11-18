@@ -67,7 +67,7 @@ class Regressor:
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": MultiOutputRegressor(LinearSVR())}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
@@ -155,13 +155,22 @@ class Regressor:
         target = model 
         model_target = self.models.get(model)
         parameters = self.hyperparameters.get(model)
-        optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+        if type(model_target) != MultiOutputRegressor:
+            optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+        else:
+            _pipe = (Pipeline([('pipe', model_target)]))
+            optimal_params = grids(_pipe, parameters, self.X_train, self.y_train) 
+            optimal_params = self._clear_dict(optimal_params)
+
+
         if model == 'K-Neighbors Regressor': 
             optimized_model = KNeighborsRegressor(**optimal_params)
         elif model == 'DecisionTree Regressor': 
             optimized_model = DecisionTreeRegressor(**optimal_params)
         elif model == 'Random Forest Regressor':
             optimized_model = RandomForestRegressor(**optimal_params)
+        elif model == 'LinearSVR Regressor':
+            optimized_model = MultiOutputRegressor(LinearSVR(**optimal_params))
 
         self.models_optimized[model] = optimized_model
         
