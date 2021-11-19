@@ -233,7 +233,7 @@ class Regressor:
 
             minimum_in_column = column.min()
 
-            # must return one string per cell in this column
+
             return [highlight if v == minimum_in_column else default for v in column]
 
 
