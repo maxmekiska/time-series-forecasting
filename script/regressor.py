@@ -1,4 +1,3 @@
-#from sklearn.svm import LinearSVR
 from sklearn.linear_model import BayesianRidge
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.preprocessing import StandardScaler
@@ -10,11 +9,11 @@ import matplotlib.pyplot as plt
 from numpy import mean, median, var
 from pandas import DataFrame
 
-
 from models.knnmodel import *
 from models.dtreemodel import *
 from models.randomforest import *
 from models.lsvm import *
+from models.bayesianridgemodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -67,7 +66,7 @@ class Regressor:
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
@@ -143,13 +142,15 @@ class Regressor:
         optimized_LSVM = grids(pipe_svm, LSVRYPARAM, self.X_train, self.y_train) 
         optimized_LSVM = self._clear_dict(optimized_LSVM)
 
-        
-
+        pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(BayesianRidge()))]))
+        optimized_bayridge = grids(pipe_bayridge, BAYRIDGEHYPARAM, self.X_train, self.y_train) 
+        optimized_bayridge = self._clear_dict(optimized_bayridge)
 
         self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
                                  "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
                                  "Random Forest Regressor": RandomForestRegressor(**optimized_RFOREST),
-                                 "LinearSVR Regressor": MultiOutputRegressor(LinearSVR(**optimized_LSVM))}
+                                 "LinearSVR Regressor": MultiOutputRegressor(LinearSVR(**optimized_LSVM)),
+                                 "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge(**optimized_bayridge))}
 
     def optimize_ind(self, model: str) -> None:
         target = model 
