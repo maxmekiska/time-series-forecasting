@@ -151,46 +151,18 @@ class Regressor:
                 optimized_bayridge = self._clear_dict(optimized_bayridge)
                 self.models_optimized[i] = MultiOutputRegressor(model_un(**optimized_bayridge))
 
-        #optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
-        #optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
-        #optimized_RFOREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
-
-        #pipe_svm = (Pipeline([('pipe', MultiOutputRegressor(LinearSVR()))]))
-        #optimized_LSVM = grids(pipe_svm, LSVRYPARAM, self.X_train, self.y_train) 
-        #optimized_LSVM = self._clear_dict(optimized_LSVM)
-
-        #pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(BayesianRidge()))]))
-        #optimized_bayridge = grids(pipe_bayridge, BAYRIDGEHYPARAM, self.X_train, self.y_train) 
-        #optimized_bayridge = self._clear_dict(optimized_bayridge)
-
-        #self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
-                                 #"DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
-                                 #"Random Forest Regressor": RandomForestRegressor(**optimized_RFOREST),
-                                 #"LinearSVR Regressor": MultiOutputRegressor(LinearSVR(**optimized_LSVM)),
-                                 #"Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge(**optimized_bayridge))}
-
     def optimize_ind(self, model: str) -> None:
-        target = model 
         model_target = self.models.get(model)
         parameters = self.hyperparameters.get(model)
+        model_un = self.models_un.get(model)
         if type(model_target) != MultiOutputRegressor:
             optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+            self.models_optimized[model] = model_un(**optimal_params)
         else:
             _pipe = (Pipeline([('pipe', model_target)]))
             optimal_params = grids(_pipe, parameters, self.X_train, self.y_train) 
             optimal_params = self._clear_dict(optimal_params)
-
-
-        if model == 'K-Neighbors Regressor': 
-            optimized_model = KNeighborsRegressor(**optimal_params)
-        elif model == 'DecisionTree Regressor': 
-            optimized_model = DecisionTreeRegressor(**optimal_params)
-        elif model == 'Random Forest Regressor':
-            optimized_model = RandomForestRegressor(**optimal_params)
-        elif model == 'LinearSVR Regressor':
-            optimized_model = MultiOutputRegressor(LinearSVR(**optimal_params))
-
-        self.models_optimized[model] = optimized_model
+            self.models_optimized[model] = MultiOutputRegressor(model_un(**optimal_params)) 
         
     def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
