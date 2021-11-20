@@ -64,6 +64,8 @@ class Regressor:
         
         self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
 
+        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge}
+
         self.models_optimized = {}
 
         self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM}
@@ -133,24 +135,39 @@ class Regressor:
         return new_dict
 
     def optimizer(self) -> None:
-        
-        optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
-        optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
-        optimized_RFOREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
+        models = self.models
+        models_un = self.models_un
+        params = self.hyperparameters
+        for i, j in models.items():
+            model = j
+            parameter = params.get(i)
+            if type(j) != MultiOutputRegressor: 
+                optimized_params = grids_random(model, parameter, self.X_train, self.y_train) 
+                self.models_optimized[i] = models_un.get(i)(**optimized_params)
+            else:
+                model_un = models_un.get(i)
+                pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(model_un()))]))
+                optimized_bayridge = grids(pipe_bayridge, parameter, self.X_train, self.y_train) 
+                optimized_bayridge = self._clear_dict(optimized_bayridge)
+                self.models_optimized[i] = MultiOutputRegressor(model_un(**optimized_bayridge))
 
-        pipe_svm = (Pipeline([('pipe', MultiOutputRegressor(LinearSVR()))]))
-        optimized_LSVM = grids(pipe_svm, LSVRYPARAM, self.X_train, self.y_train) 
-        optimized_LSVM = self._clear_dict(optimized_LSVM)
+        #optimized_KNN = grids(KNeighborsRegressor(), KNNHYPARAM, self.X_train, self.y_train) 
+        #optimized_DTREE = grids(DecisionTreeRegressor(), DTREEHYPARAM, self.X_train, self.y_train) 
+        #optimized_RFOREST = grids(RandomForestRegressor(), RFORESTHYPARAM, self.X_train, self.y_train) 
 
-        pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(BayesianRidge()))]))
-        optimized_bayridge = grids(pipe_bayridge, BAYRIDGEHYPARAM, self.X_train, self.y_train) 
-        optimized_bayridge = self._clear_dict(optimized_bayridge)
+        #pipe_svm = (Pipeline([('pipe', MultiOutputRegressor(LinearSVR()))]))
+        #optimized_LSVM = grids(pipe_svm, LSVRYPARAM, self.X_train, self.y_train) 
+        #optimized_LSVM = self._clear_dict(optimized_LSVM)
 
-        self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
-                                 "DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
-                                 "Random Forest Regressor": RandomForestRegressor(**optimized_RFOREST),
-                                 "LinearSVR Regressor": MultiOutputRegressor(LinearSVR(**optimized_LSVM)),
-                                 "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge(**optimized_bayridge))}
+        #pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(BayesianRidge()))]))
+        #optimized_bayridge = grids(pipe_bayridge, BAYRIDGEHYPARAM, self.X_train, self.y_train) 
+        #optimized_bayridge = self._clear_dict(optimized_bayridge)
+
+        #self.models_optimized = {"K-Neighbors Regressor": KNeighborsRegressor(**optimized_KNN),
+                                 #"DecisionTree Regressor": DecisionTreeRegressor(**optimized_DTREE),
+                                 #"Random Forest Regressor": RandomForestRegressor(**optimized_RFOREST),
+                                 #"LinearSVR Regressor": MultiOutputRegressor(LinearSVR(**optimized_LSVM)),
+                                 #"Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge(**optimized_bayridge))}
 
     def optimize_ind(self, model: str) -> None:
         target = model 
