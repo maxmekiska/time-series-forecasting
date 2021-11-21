@@ -140,15 +140,15 @@ class Regressor:
         for i, j in models.items():
             model = j
             parameter = params.get(i)
+            model_un = self.models_un.get(i)
             if type(j) != RegressorChain: 
                 optimized_params = grids_random(model, parameter, self.X_train, self.y_train) 
-                self.models_optimized[i] = models_un.get(i)(**optimized_params)
+                self.models_optimized[i] = model_un(**optimized_params)
             else:
-                model_un = models_un.get(i)
-                pipe_bayridge = (Pipeline([('pipe', RegressorChain(model_un()))]))
-                optimized_bayridge = grids(pipe_bayridge, parameter, self.X_train, self.y_train) 
-                optimized_bayridge = self._clear_dict(optimized_bayridge)
-                self.models_optimized[i] = RegressorChain(model_un(**optimized_bayridge))
+                _pipe = (Pipeline([('pipe', RegressorChain(model_un()))]))
+                optimal_params = grids(_pipe, parameter, self.X_train, self.y_train) 
+                optimal_params = self._clear_dict(optimal_params)
+                self.models_optimized[i] = RegressorChain(model_un(**optimal_params))
 
     def optimize_ind(self, model: str) -> None:
         model_target = self.models.get(model)
