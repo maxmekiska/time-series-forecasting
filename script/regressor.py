@@ -1,5 +1,4 @@
-from sklearn.linear_model import BayesianRidge
-from sklearn.multioutput import MultiOutputRegressor
+from sklearn.multioutput import RegressorChain
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
@@ -62,7 +61,7 @@ class Regressor:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
         
-        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": MultiOutputRegressor(LinearSVR()), "Bayesian Ridge Regressor": MultiOutputRegressor(BayesianRidge())}
+        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge())}
 
         self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge}
 
@@ -131,7 +130,7 @@ class Regressor:
     def _clear_dict(self, dictionary: dict) -> dict:
         new_dict = {}
         for i, j in dictionary.items():
-            new_dict[i[17:]] = j
+            new_dict[i[22:]] = j
         return new_dict
 
     def optimizer(self) -> None:
@@ -141,28 +140,28 @@ class Regressor:
         for i, j in models.items():
             model = j
             parameter = params.get(i)
-            if type(j) != MultiOutputRegressor: 
+            if type(j) != RegressorChain: 
                 optimized_params = grids_random(model, parameter, self.X_train, self.y_train) 
                 self.models_optimized[i] = models_un.get(i)(**optimized_params)
             else:
                 model_un = models_un.get(i)
-                pipe_bayridge = (Pipeline([('pipe', MultiOutputRegressor(model_un()))]))
+                pipe_bayridge = (Pipeline([('pipe', RegressorChain(model_un()))]))
                 optimized_bayridge = grids(pipe_bayridge, parameter, self.X_train, self.y_train) 
                 optimized_bayridge = self._clear_dict(optimized_bayridge)
-                self.models_optimized[i] = MultiOutputRegressor(model_un(**optimized_bayridge))
+                self.models_optimized[i] = RegressorChain(model_un(**optimized_bayridge))
 
     def optimize_ind(self, model: str) -> None:
         model_target = self.models.get(model)
         parameters = self.hyperparameters.get(model)
         model_un = self.models_un.get(model)
-        if type(model_target) != MultiOutputRegressor:
+        if type(model_target) != RegressorChain:
             optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
             self.models_optimized[model] = model_un(**optimal_params)
         else:
             _pipe = (Pipeline([('pipe', model_target)]))
             optimal_params = grids(_pipe, parameters, self.X_train, self.y_train) 
             optimal_params = self._clear_dict(optimal_params)
-            self.models_optimized[model] = MultiOutputRegressor(model_un(**optimal_params)) 
+            self.models_optimized[model] = RegressorChain(model_un(**optimal_params)) 
         
     def performance(self, metric: str, optimized: bool = False) -> None:
         ''' Method to benchmark algorithm perfromance. Trainings data-set 80%, testing data-set 20%.
