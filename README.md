@@ -7,9 +7,9 @@ Wrapper around scikit-learn time series prediction algorithms... and possibly mo
 
 ## TO-DO
 
-- [ ] outsource each regressor model into a sub-directory - in progress
-- [ ] create for each model a seperate file - in progress
-- [ ] implement grid-search file - in progress, unstable grid search used
+- [x] outsource each regressor model into a sub-directory
+- [x] create for each model a seperate file
+- [x] implement grid-search file
 - [ ] implement basic time-series exploratory analysis capability
 - [ ] enable multivariate implementation capability
 - [ ] build formal documentation
@@ -17,7 +17,7 @@ Wrapper around scikit-learn time series prediction algorithms... and possibly mo
 - ...
 - maybe:
 - [ ] optimize code with C
-- [ ] explore deep-learning models (tensor flow) 
+- [ ] explore deep-learning models (tensor flow, possibly from past project) 
 - [ ] explore ml with quantum computing boosting
 - ...
 
