@@ -10,8 +10,8 @@ from pandas import DataFrame
 
 from models.knnmodel import *
 from models.dtreemodel import *
-from models.randomforest import *
-from models.lsvm import *
+from models.randomforestmodel import *
+from models.lsvmmodel import *
 from models.adaboostmodel import *
 from models.bayesianridgemodel import *
 from utils.gridsearch import *
