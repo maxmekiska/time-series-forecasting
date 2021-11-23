@@ -14,6 +14,7 @@ from models.randomforestmodel import *
 from models.lsvmmodel import *
 from models.adaboostmodel import *
 from models.bayesianridgemodel import *
+from models.gaussianprocessmodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -62,13 +63,13 @@ class Regressor:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
         
-        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()), "Ada Boost Regressor": RegressorChain(AdaBoostRegressor())}
+        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()), "Ada Boost Regressor": RegressorChain(AdaBoostRegressor()), "Gaussian Process Regressor": GaussianProcessRegressor()}
 
-        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge, "Ada Boost Regressor": AdaBoostRegressor}
+        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge, "Ada Boost Regressor": AdaBoostRegressor, "Gaussian Process Regressor": GaussianProcessRegressor}
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
