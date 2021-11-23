@@ -69,7 +69,7 @@ class Regressor:
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVRYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVMHYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
