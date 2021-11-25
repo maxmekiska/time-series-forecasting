@@ -16,6 +16,7 @@ from models.adaboostmodel import *
 from models.bayesianridgemodel import *
 from models.gaussianprocessmodel import *
 from models.baggingmodel import *
+from models.svrmodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -64,13 +65,13 @@ class Regressor:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
         
-        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()), "Ada Boost Regressor": RegressorChain(AdaBoostRegressor()), "Gaussian Process Regressor": GaussianProcessRegressor(), "Bagging Regressor": BaggingRegressor()}
+        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()), "Ada Boost Regressor": RegressorChain(AdaBoostRegressor()), "Gaussian Process Regressor": GaussianProcessRegressor(), "Bagging Regressor": BaggingRegressor(), "SV Regressor": RegressorChain(SVR())}
 
-        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge, "Ada Boost Regressor": AdaBoostRegressor, "Gaussian Process Regressor": GaussianProcessRegressor, "Bagging Regressor": BaggingRegressor}
+        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge, "Ada Boost Regressor": AdaBoostRegressor, "Gaussian Process Regressor": GaussianProcessRegressor, "Bagging Regressor": BaggingRegressor, "SV Regressor": SVR}
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVMHYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM, "Bagging Regressor": BAGGINGHYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVMHYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM, "Bagging Regressor": BAGGINGHYPARAM, "SV Regressor": SVRHYPARAM}
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
@@ -149,7 +150,7 @@ class Regressor:
                 self.models_optimized[i] = model_un(**optimized_params)
             else:
                 _pipe = (Pipeline([('pipe', RegressorChain(model_un()))]))
-                optimal_params = grids(_pipe, parameter, self.X_train, self.y_train) 
+                optimal_params = grids_random(_pipe, parameter, self.X_train, self.y_train) 
                 optimal_params = self._clear_dict(optimal_params)
                 self.models_optimized[i] = RegressorChain(model_un(**optimal_params))
 
@@ -158,11 +159,11 @@ class Regressor:
         parameters = self.hyperparameters.get(model)
         model_un = self.models_un.get(model)
         if type(model_target) != RegressorChain:
-            optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+            optimal_params = grids_random(model_target, parameters, self.X_train, self.y_train)
             self.models_optimized[model] = model_un(**optimal_params)
         else:
             _pipe = (Pipeline([('pipe', model_target)]))
-            optimal_params = grids(_pipe, parameters, self.X_train, self.y_train) 
+            optimal_params = grids_random(_pipe, parameters, self.X_train, self.y_train) 
             optimal_params = self._clear_dict(optimal_params)
             self.models_optimized[model] = RegressorChain(model_un(**optimal_params)) 
         
