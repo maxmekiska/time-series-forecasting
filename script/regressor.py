@@ -18,6 +18,7 @@ from models.gaussianprocessmodel import *
 from models.baggingmodel import *
 from models.svrmodel import *
 from models.linearpossionmodel import *
+from models.lineartweediemodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -66,13 +67,49 @@ class Regressor:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, shuffle=False, stratify=None)
         
-        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(), "DecisionTree Regressor": DecisionTreeRegressor(), "Random Forest Regressor": RandomForestRegressor(), "LinearSVR Regressor": RegressorChain(LinearSVR()), "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()), "Ada Boost Regressor": RegressorChain(AdaBoostRegressor()), "Gaussian Process Regressor": GaussianProcessRegressor(), "Bagging Regressor": BaggingRegressor(), "SV Regressor": RegressorChain(SVR()), "Linear Poisson Regressor": RegressorChain(PoissonRegressor())}
+        self.models = {"K-Neighbors Regressor": KNeighborsRegressor(),
+                       "DecisionTree Regressor": DecisionTreeRegressor(),
+                       "Random Forest Regressor": RandomForestRegressor(),
+                       "LinearSVR Regressor": RegressorChain(LinearSVR()),
+                       "Bayesian Ridge Regressor": RegressorChain(BayesianRidge()),
+                       "Ada Boost Regressor": RegressorChain(AdaBoostRegressor()),
+                       "Gaussian Process Regressor": GaussianProcessRegressor(),
+                       "Bagging Regressor": BaggingRegressor(),
+                       "SV Regressor": RegressorChain(SVR()),
+                       "Linear Poisson Regressor": RegressorChain(PoissonRegressor()),
+                       "Linear Tweedie Regressor": RegressorChain(TweedieRegressor())
 
-        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor, "DecisionTree Regressor": DecisionTreeRegressor, "Random Forest Regressor": RandomForestRegressor, "LinearSVR Regressor": LinearSVR, "Bayesian Ridge Regressor": BayesianRidge, "Ada Boost Regressor": AdaBoostRegressor, "Gaussian Process Regressor": GaussianProcessRegressor, "Bagging Regressor": BaggingRegressor, "SV Regressor": SVR, "Linear Poisson Regressor": PoissonRegressor}
+                       }
+
+        self.models_un = {"K-Neighbors Regressor": KNeighborsRegressor,
+                          "DecisionTree Regressor": DecisionTreeRegressor,
+                          "Random Forest Regressor": RandomForestRegressor,
+                          "LinearSVR Regressor": LinearSVR,
+                          "Bayesian Ridge Regressor": BayesianRidge,
+                          "Ada Boost Regressor": AdaBoostRegressor,
+                          "Gaussian Process Regressor": GaussianProcessRegressor,
+                          "Bagging Regressor": BaggingRegressor,
+                          "SV Regressor": SVR,
+                          "Linear Poisson Regressor": PoissonRegressor,
+                          "Linear Tweedie Regressor": TweedieRegressor
+
+                          }
 
         self.models_optimized = {}
 
-        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM, "DecisionTree Regressor": DTREEHYPARAM, "Random Forest Regressor": RFORESTHYPARAM, "LinearSVR Regressor": LSVMHYPARAM, "Bayesian Ridge Regressor": BAYRIDGEHYPARAM, "Ada Boost Regressor": ADABOOSTHYPARAM, "Gaussian Process Regressor": GAUSSHYPARAM, "Bagging Regressor": BAGGINGHYPARAM, "SV Regressor": SVRHYPARAM, "Linear Poisson Regressor": LPOSSIONHYPARAM}
+        self.hyperparameters = {"K-Neighbors Regressor": KNNHYPARAM,
+                                "DecisionTree Regressor": DTREEHYPARAM,
+                                "Random Forest Regressor": RFORESTHYPARAM,
+                                "LinearSVR Regressor": LSVMHYPARAM,
+                                "Bayesian Ridge Regressor": BAYRIDGEHYPARAM,
+                                "Ada Boost Regressor": ADABOOSTHYPARAM,
+                                "Gaussian Process Regressor": GAUSSHYPARAM,
+                                "Bagging Regressor": BAGGINGHYPARAM,
+                                "SV Regressor": SVRHYPARAM,
+                                "Linear Poisson Regressor": LPOSSIONHYPARAM,
+                                "Linear Tweedie Regressor": LTWEEDIEHYPARAM
+
+                                }
 
             
     def _sliding_window(self, _list: list, look_back: int, look_front: int):
