@@ -19,6 +19,7 @@ from models.baggingmodel import *
 from models.svrmodel import *
 from models.linearpossionmodel import *
 from models.lineartweediemodel import *
+from models.lineargammamodel import *
 from utils.gridsearch import *
 
 class Regressor:
@@ -77,7 +78,8 @@ class Regressor:
                        "Bagging Regressor": BaggingRegressor(),
                        "SV Regressor": RegressorChain(SVR()),
                        "Linear Poisson Regressor": RegressorChain(PoissonRegressor()),
-                       "Linear Tweedie Regressor": RegressorChain(TweedieRegressor())
+                       "Linear Tweedie Regressor": RegressorChain(TweedieRegressor()),
+                       "Linear Gamma Regressor": RegressorChain(GammaRegressor())
 
                        }
 
@@ -91,7 +93,8 @@ class Regressor:
                           "Bagging Regressor": BaggingRegressor,
                           "SV Regressor": SVR,
                           "Linear Poisson Regressor": PoissonRegressor,
-                          "Linear Tweedie Regressor": TweedieRegressor
+                          "Linear Tweedie Regressor": TweedieRegressor,
+                          "Linear Gamma Regressor": GammaRegressor
 
                           }
 
@@ -107,7 +110,8 @@ class Regressor:
                                 "Bagging Regressor": BAGGINGHYPARAM,
                                 "SV Regressor": SVRHYPARAM,
                                 "Linear Poisson Regressor": LPOSSIONHYPARAM,
-                                "Linear Tweedie Regressor": LTWEEDIEHYPARAM
+                                "Linear Tweedie Regressor": LTWEEDIEHYPARAM,
+                                "Linear Gamma Regressor": LGAMMAHYPARAM
 
                                 }
 
