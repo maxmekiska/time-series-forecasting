@@ -179,7 +179,7 @@ class Regressor:
             new_dict[i[22:]] = j
         return new_dict
 
-    def optimizer(self) -> None:
+    def optimizer(self, grid_type: str = 'normal') -> None:
         models = self.models
         models_un = self.models_un
         params = self.hyperparameters
@@ -188,11 +188,21 @@ class Regressor:
             parameter = params.get(i)
             model_un = self.models_un.get(i)
             if type(j) != RegressorChain: 
-                optimized_params = grids_random(model, parameter, self.X_train, self.y_train) 
+                if grid_type == 'normal':
+                    optimized_params = grids(model, parameter, self.X_train, self.y_train) 
+                elif grid_type == 'halv':
+                    optimized_params = grids_halv(model, parameter, self.X_train, self.y_train) 
+                elif grid_type == 'random':
+                    optimized_params = grids_random(model, parameter, self.X_train, self.y_train) 
                 self.models_optimized[i] = model_un(**optimized_params)
             else:
                 _pipe = (Pipeline([('pipe', RegressorChain(model_un()))]))
-                optimal_params = grids_random(_pipe, parameter, self.X_train, self.y_train) 
+                if grid_type =='normal':
+                    optimal_params = grids(_pipe, parameter, self.X_train, self.y_train) 
+                elif grid_type =='halv':
+                    optimal_params = grids_halv(_pipe, parameter, self.X_train, self.y_train) 
+                elif grid_type =='random':
+                    optimal_params = grids_random(_pipe, parameter, self.X_train, self.y_train) 
                 optimal_params = self._clear_dict(optimal_params)
                 self.models_optimized[i] = RegressorChain(model_un(**optimal_params))
 
