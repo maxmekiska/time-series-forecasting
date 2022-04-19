@@ -206,12 +206,17 @@ class Regressor:
                 optimal_params = self._clear_dict(optimal_params)
                 self.models_optimized[i] = RegressorChain(model_un(**optimal_params))
 
-    def optimize_ind(self, model: str) -> None:
+    def optimize_ind(self, model: str, grid_type: str = 'normal') -> None:
         model_target = self.models.get(model)
         parameters = self.hyperparameters.get(model)
         model_un = self.models_un.get(model)
         if type(model_target) != RegressorChain:
-            optimal_params = grids_random(model_target, parameters, self.X_train, self.y_train)
+            if grid_type == 'normal':
+                optimal_params = grids(model_target, parameters, self.X_train, self.y_train)
+            elif grid_type == 'halv':
+                optimal_params = grids_halv(model_target, parameters, self.X_train, self.y_train)
+            elif grid_type == 'random':
+                optimal_params = grids_random(model_target, parameters, self.X_train, self.y_train)
             self.models_optimized[model] = model_un(**optimal_params)
         else:
             _pipe = (Pipeline([('pipe', model_target)]))
@@ -274,12 +279,14 @@ class Regressor:
         def minimum_value_in_column(column):    
 
             highlight = 'background-color: palegreen;'
+            highlight_negative = 'background-color: red;'
             default = ''
 
             minimum_in_column = column.min()
+            maximum_in_column = column.max()
 
 
-            return [highlight if v == minimum_in_column else default for v in column]
+            return [highlight if v == minimum_in_column else highlight_negative if v == maximum_in_column else default for v in column]
 
 
         return results.style.apply(minimum_value_in_column, subset=['Mean', 'Median', 'Variance'], axis=0)
