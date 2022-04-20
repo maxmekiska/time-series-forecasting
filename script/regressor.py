@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from numpy import mean, median, var
 from pandas import DataFrame
 
+import warnings
+warnings.filterwarnings('ignore')
+
 from models.knnmodel import *
 from models.dtreemodel import *
 from models.randomforestmodel import *
