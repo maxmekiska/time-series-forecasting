@@ -1,6 +1,8 @@
 # Time Series Forecasting Wrapper Library
 Wrapper around scikit-learn time series prediction algorithms... and possibly more...
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/maxmekiska/time-series-forecasting/main?labpath=HowTo101.ipynb)
+
 ## Test-run Notebooks
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/maxmekiska/time-series-forecasting/main?labpath=sandbox.ipynb)
