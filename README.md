@@ -32,6 +32,12 @@ This wrapper currently supports the following scikit-learn time series predictor
 11. Linear Tweedie Regressor
 12. Linear Gamma Regressor
 
+## How to Guide
+
+![Loading Data and source code](resources/step1.png)
+
+![Creating Regressor object](resources/step2.png)
+
 
 
 
