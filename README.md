@@ -36,11 +36,19 @@ This wrapper currently supports the following scikit-learn time series predictor
 
 ![Loading Data and source code](resources/step1.png)
 
-![Creating Regressor object](resources/step2.png)
+![Creating Regressor object, initiating training models](resources/step2.png)
 
+![Performance Evaluation](resources/step3_1.png)
 
+![Performance Evaluation 2](resources/step3_2.png)
 
+![Making predictions](resources/step4.png)
 
+![Individual model training](resources/step5_1.png)
+
+![Individual model training 2](resources/step5_2.png)
+
+![Making individual predictions](resources/step6.png)
 
 ## References
 
