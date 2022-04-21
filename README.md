@@ -34,21 +34,65 @@ This wrapper currently supports the following scikit-learn time series predictor
 
 ## How to Guide
 
-![Loading Data and source code](resources/step1.png)
+![Loading Data and source code](assets/step1.png)
 
-![Creating Regressor object, initiating training models](resources/step2.png)
 
-![Performance Evaluation](resources/step3_1.png)
+```python
+%run src/regressor.py
+```
 
-![Performance Evaluation 2](resources/step3_2.png)
+![Creating Regressor object, initiating training models](assets/step2.png)
 
-![Making predictions](resources/step4.png)
+```python
 
-![Individual model training](resources/step5_1.png)
+regress = Regressor(data_, look_back = 5, look_future = 2, scale = True)
 
-![Individual model training 2](resources/step5_2.png)
 
-![Making individual predictions](resources/step6.png)
+regress.optimizer(grid_type = 'random')
+```
+
+![Performance Evaluation](assets/step3_1.png)
+
+![Performance Evaluation 2](assets/step3_2.png)
+
+
+```python
+regress.performance(metric = 'MSE', optimized = True)
+
+regress.performance(metric = 'MSE', optimized = False)
+```
+
+![Making predictions](assets/step4.png)
+
+```python
+forecast_all_results_optimized = regress.forecast_all(data = input_, optimized = True)
+forecast_all_results_optimized
+
+forecast_all_non_optimized = regress.forecast_all(data = input_, optimized = False)
+forecast_all_non_optimized
+```
+
+![Individual model training](assets/step5_1.png)
+
+![Individual model training 2](assets/step5_2.png)
+
+```python
+regress.optimize_ind(model = 'Linear Gamma Regressor', grid_type = 'random')
+regress.optimize_ind(model = 'Bayesian Ridge Regressor', grid_type = 'random')
+regress.optimize_ind(model = 'Linear Tweedie Regressor', grid_type = 'random')
+
+
+regress.performance(metric = 'MSE', optimized = True)
+regress.performance(metric = 'MSE', optimized = False)
+```
+
+![Making individual predictions](assets/step6.png)
+
+```python
+regress.forecast(data = input_, model = 'Linear Gamma Regressor', optimized = True)
+regress.forecast(data = input_, model = 'Bayesian Ridge Regressor', optimized = True)
+regress.forecast(data = input_, model = 'Linear Tweedie Regressor', optimized = True)
+```
 
 ## References
 
